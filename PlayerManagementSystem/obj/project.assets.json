@@ -3742,19 +3742,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Jagdish\\.nuget\\packages\\": {}
+    "C:\\Users\\USER\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "G:\\riders\\PlayerManagementSystem\\PlayerManagementSystem\\PlayerManagementSystem.csproj",
+      "projectUniqueName": "C:\\Users\\USER\\OneDrive\\Desktop\\playermanager\\PlayerManagementSystem\\PlayerManagementSystem.csproj",
       "projectName": "PlayerManagementSystem",
-      "projectPath": "G:\\riders\\PlayerManagementSystem\\PlayerManagementSystem\\PlayerManagementSystem.csproj",
-      "packagesPath": "C:\\Users\\Jagdish\\.nuget\\packages\\",
-      "outputPath": "G:\\riders\\PlayerManagementSystem\\PlayerManagementSystem\\obj\\",
+      "projectPath": "C:\\Users\\USER\\OneDrive\\Desktop\\playermanager\\PlayerManagementSystem\\PlayerManagementSystem.csproj",
+      "packagesPath": "C:\\Users\\USER\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\USER\\OneDrive\\Desktop\\playermanager\\PlayerManagementSystem\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Jagdish\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\USER\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -3828,7 +3828,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.402/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
