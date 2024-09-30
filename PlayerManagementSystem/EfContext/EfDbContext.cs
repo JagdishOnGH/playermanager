@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PlayerManagementSystem.Models;
 
-namespace PlayerManagementSystem.EfDbContext;
+namespace PlayerManagementSystem.EfContext;
 
 public class EfDbContext: DbContext
 {

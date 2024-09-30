@@ -6,15 +6,15 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using PlayerManagementSystem.EfDbContext;
+using PlayerManagementSystem.EfContext;
 
 #nullable disable
 
 namespace PlayerManagementSystem.Migrations
 {
     [DbContext(typeof(EfDbContext))]
-    [Migration("20240929145058_Initial")]
-    partial class Initial
+    [Migration("20240930070853_Initial5")]
+    partial class Initial5
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
