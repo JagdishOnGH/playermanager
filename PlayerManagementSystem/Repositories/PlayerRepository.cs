@@ -9,10 +9,10 @@ public class PlayerRepository(EfDbContext ctx)
 {
     private readonly EfDbContext context = ctx;
 
-  public  Task<List<Person>> GetAllPlayers()
+  public  Task<List<Player>> GetAllPlayers()
     {
         
-        return context.Persons.ToListAsync();
+        return context.Players.ToListAsync();
 
     }
 }

@@ -21,9 +21,10 @@ namespace PlayerManagementSystem.Models
         public string State {get;set;}
 
         [Required]
-        public string Country {get;set;}  
+        public string Country {get;set;}
+
+        public bool IsPermanent { get; set; } = true;
 
 
-        public virtual ICollection<Person> Persons {get;set;}      
     }
 }

@@ -9,60 +9,25 @@ public class EfDbContext: DbContext
     {
         
     }
-    public DbSet<Person> Persons { get; set; }
+    
     public DbSet<Address> Addresses { get; set; }
     public DbSet<Palika> Palikas { get; set; }
     public DbSet<Ward> Wards { get; set; }
     public DbSet<Teams> Teams { get; set; }
+    public DbSet<PersonalDetails> PersonalDetails { get; set; }
+    public DbSet<Manager> Managers { get; set; }
+    public DbSet<Player> Players { get; set; }
+    public DbSet<Coach> Coaches { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<Person>()
-            .HasOne(p => p.PermanentAddress)
-            .WithMany(a => a.Persons)
-            .HasForeignKey(p => p.PermanentAddressId)
-            .OnDelete(DeleteBehavior.Restrict);
+   protected override void OnModelCreating(ModelBuilder mb)
+   {
+       mb.Entity<Teams>().HasOne<Manager>().WithOne(m => m.ManagingTeam).HasForeignKey<Teams>(t=>t.ManagerId);
+         mb.Entity<Teams>().HasOne<Coach>().WithOne(c => c.CoachingTeam).HasForeignKey<Teams>(t=>t.CoachId);
+         
+   }
+    
 
-        modelBuilder.Entity<Person>()
-            .HasOne<Address>()
-            .WithMany()
-            .HasForeignKey( "TempAddressId")
-            .OnDelete(DeleteBehavior.Restrict);
-        
-        
-
-        modelBuilder.Entity<Person>()
-            .HasMany(p => p.ManagedTeams)
-            .WithOne(t => t.Manager)
-            .HasForeignKey(t => t.ManagerId);
-
-        modelBuilder.Entity<Person>()
-            .HasMany(p => p.CoachedTeams)
-            .WithOne(t => t.Coach)
-            .HasForeignKey(t => t.CoachId);
-
-        // Configure Team Relationships
-        modelBuilder.Entity<Teams>()
-            .HasOne(t => t.Ward)
-            .WithMany(w => w.TeamList)
-            .HasForeignKey(t => t.WardId);
-
-        modelBuilder.Entity<Teams>()
-            .HasOne(t => t.Palika)
-            
-            .WithMany(p => p.LocalTeamsList)
-            .HasForeignKey(t => t.PalikaId);
-
-        // Configure Ward Relationships
-        modelBuilder.Entity<Ward>()
-            .HasOne(w => w.RefPalika)
-            .WithMany( p => p.WardsList)
-            .HasForeignKey(w => w.PalikaId);
-        
-        base.OnModelCreating(modelBuilder);
-        
-        
-    }
+   
     
     
     
