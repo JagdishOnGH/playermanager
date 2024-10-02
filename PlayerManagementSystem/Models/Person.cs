@@ -40,9 +40,7 @@ namespace PlayerManagementSystem.Models
 
         
 
-        public virtual ICollection<Teams> ManagedTeams { get; set; } = new List<Teams>();
-
-        public virtual ICollection<Teams> CoachedTeams { get; set; } = new List<Teams>();
+       
     }
 
     public enum Gender
