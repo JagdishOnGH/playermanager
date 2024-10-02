@@ -11,13 +11,14 @@ public class EfDbContext: DbContext
     }
     
     public DbSet<Address> Addresses { get; set; }
-    public DbSet<Palika> Palikas { get; set; }
+    
     public DbSet<Ward> Wards { get; set; }
     public DbSet<Teams> Teams { get; set; }
     public DbSet<PersonalDetails> PersonalDetails { get; set; }
     public DbSet<Manager> Managers { get; set; }
     public DbSet<Player> Players { get; set; }
     public DbSet<Coach> Coaches { get; set; }
+    public DbSet<Palika> Palikas { get; set; }
 
    protected override void OnModelCreating(ModelBuilder mb)
    {

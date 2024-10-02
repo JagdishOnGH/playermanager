@@ -6,7 +6,7 @@ namespace PlayerManagementSystem.Models
 {
    [Key]
     public int PalikaId {get;set;} 
-    [Required]
+    
     public string Name {get;set;}
 
     public List<int> Wards {get;set;} = new List<int>();

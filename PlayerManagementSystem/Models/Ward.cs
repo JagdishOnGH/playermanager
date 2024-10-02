@@ -7,12 +7,12 @@ namespace PlayerManagementSystem.Models
     {
         [Key]
         public int WardId { get; set; }
-        [ForeignKey("RefPalika")]
+        
         public int PalikaId { get; set; }
        
         public List<int> Teams { get; set; } = new List<int>();
 
-        public Palika RefPalika { get; set; }
+        public Palika Palika { get; set; }
         public ICollection<Teams> TeamList { get; set; } = new List<Teams>();
     }
 }
