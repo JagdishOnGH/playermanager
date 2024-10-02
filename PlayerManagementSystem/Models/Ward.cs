@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PlayerManagementSystem.Models
 {
-    public class Ward
+    public sealed class Ward
     {
         [Key]
         public int WardId { get; set; }
@@ -12,7 +12,7 @@ namespace PlayerManagementSystem.Models
        
         public List<int> Teams { get; set; } = new List<int>();
 
-        public virtual Palika RefPalika { get; set; }
-        public virtual ICollection<Teams> TeamList { get; set; } = new List<Teams>();
+        public Palika RefPalika { get; set; }
+        public ICollection<Teams> TeamList { get; set; } = new List<Teams>();
     }
 }

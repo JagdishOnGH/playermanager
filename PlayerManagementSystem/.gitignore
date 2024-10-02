@@ -1,0 +1,26 @@
+﻿# Ignore build outputs
+bin/
+obj/
+Migrations/
+
+# Ignore user-specific files
+*.user
+*.suo
+*.vs
+.idea/
+
+# Ignore other IDE-specific folders
+.vscode/
+
+# Ignore compiled output
+*.exe
+*.dll
+*.pdb
+
+# Ignore temporary files
+*.log
+*.tmp
+
+# Ignore sensitive data files
+appsettings.json
+appsettings.Development.json
