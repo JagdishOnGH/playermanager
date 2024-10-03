@@ -77,11 +77,51 @@ namespace PlayerManagementSystem.Controllers
             return Ok(personalDetails);
         }
 
+        [HttpPut]
+        [Route("update/{id}")]
+
+        public async Task<IActionResult> Update(int id, PersonalDetails personalDetails)
+        {
+            try{
+            var personalDetailsToUpdate = await _context.PersonalDetails.Include(p => p.Role)
+                .Include(details => details.Addresses)
+                .Include(e => e.Team)
+                .FirstOrDefaultAsync(p => p.Id == id);
+            if (personalDetailsToUpdate == null)
+            {
+                return NotFound();
+            }
+
+            personalDetailsToUpdate.Name = personalDetails.Name;
+            personalDetailsToUpdate.ProfilePicUrl = personalDetails.ProfilePicUrl;
+            personalDetailsToUpdate.PhoneNo = personalDetails.PhoneNo;
+            personalDetailsToUpdate.Email = personalDetails.Email;
+            personalDetailsToUpdate.Dob = personalDetails.Dob;
+            personalDetailsToUpdate.TeamId = personalDetails.TeamId;
+
+            await _context.SaveChangesAsync();
+            return Ok(new ApiResponse<PersonalDetails>{
+                Data = personalDetailsToUpdate
+            });
+
+
+            }
+            catch (Exception ex){
+                return BadRequest(new ApiResponse<PersonalDetails>{
+                    message = "Failed",
+                    Error = ex.Message
+                });
+            }
+        }
+
+
+
         [HttpDelete]
         [Route("delete/{id}")]
 
         public async Task<IActionResult> Delete(int id)
         {
+            try{
             var personalDetails = await _context.PersonalDetails.Include(p => p.Role)
                 .Include(details => details.Addresses)
                 .Include(e => e.Team)
@@ -95,7 +135,19 @@ namespace PlayerManagementSystem.Controllers
 
             _context.PersonalDetails.Remove(personalDetails);
             await _context.SaveChangesAsync();
-            return Ok();
+
+            return Ok(new ApiResponse<IEnumerable<PersonalDetails>>{
+                message = "Deleted Successfully",
+                Data = await _context.PersonalDetails.ToListAsync()
+            });
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new ApiResponse<PersonalDetails>{
+                    message = "Failed to delete",
+                    Error = ex.Message
+                });
+            }
         }
     }
 }
