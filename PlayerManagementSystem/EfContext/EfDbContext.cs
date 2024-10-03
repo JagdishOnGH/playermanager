@@ -20,6 +20,7 @@ public class EfDbContext(DbContextOptions<EfDbContext> options) : DbContext(opti
            .Property(p => p.Gender)
            .HasConversion<int>(); //
        
+       
          
    }
     

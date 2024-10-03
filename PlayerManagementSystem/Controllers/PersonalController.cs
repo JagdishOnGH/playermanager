@@ -17,12 +17,14 @@ namespace PlayerManagementSystem.Controllers
         public async Task<IActionResult> GetAll()
         {
             var personalDetails = await _context
-                .PersonalDetails.Include(p => p.Role)
+                .PersonalDetails
+                .Include(p => p.Role)
                 .Include(details => details.Addresses)
                 .Include(e => e.Team)
                 .ToListAsync();
-
-            return Ok(personalDetails);
+            var toReturn = new ApiResponse<List<PersonalDetails>>();
+            toReturn.Data = personalDetails;
+            return Ok(toReturn);
         }
 
         [HttpPost]
@@ -31,6 +33,8 @@ namespace PlayerManagementSystem.Controllers
         {
             await _context.PersonalDetails.AddAsync(personalDetails);
             await _context.SaveChangesAsync();
+            var toReturn = new ApiResponse<PersonalDetails>();
+            toReturn.Data = personalDetails;
             return Ok(personalDetails);
         }
 
