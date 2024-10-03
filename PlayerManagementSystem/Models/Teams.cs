@@ -10,15 +10,20 @@ namespace PlayerManagementSystem.Models
 
         [Required]
         public string TeamName { get; set; }
+        public TeamOf TeamOf { get; set; }
+        public int AssociationId { get; set; }
+        
+        
 
-        public int? CoachId { get; set; }
-        public Coach Coach { get; set; }
-        public int? ManagerId { get; set; }
-        public Manager Manager { get; set; }
-        public List<Player> Players { get; set; }
 
 
       
         
+    }
+
+    public enum TeamOf
+    {
+        Ward,
+        Palika,
     }
 }
