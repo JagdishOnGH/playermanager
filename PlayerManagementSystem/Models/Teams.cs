@@ -8,14 +8,14 @@ namespace PlayerManagementSystem.Models
         [Key]
         public int TeamId { get; set; }
 
-        [Required]
-        public string TeamName { get; set; }
+        public TeamOf TeamOf { get; set; } 
 
-        public int? CoachId { get; set; }
-        public Coach Coach { get; set; }
-        public int? ManagerId { get; set; }
-        public Manager Manager { get; set; }
-        public List<Player> Players { get; set; }      
+        public string? associationId { get; set; }
         
+    }
+
+    public enum TeamOf{
+        ward ,
+        palika
     }
 }
