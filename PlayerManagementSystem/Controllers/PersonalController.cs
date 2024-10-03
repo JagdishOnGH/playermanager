@@ -26,6 +26,43 @@ namespace PlayerManagementSystem.Controllers
             toReturn.Data = personalDetails;
             return Ok(toReturn);
         }
+        
+        [HttpGet]
+        [Route("filter")]
+        public async Task<IActionResult> GetAll([FromQuery] int? ward, [FromQuery] int? teamId)
+        {
+            try
+            {
+                var query = _context.PersonalDetails
+                    .Include(p => p.Role)
+                    .Include(details => details.Addresses)
+                    .Include(e => e.Team)
+                    .AsQueryable();
+
+                if (ward.HasValue)
+                {
+                    query = query.Where(p => p.Addresses.Any(a => a.Ward == ward.Value));
+                }
+
+                if (teamId.HasValue)
+                {
+                    query = query.Where(p => p.TeamId == teamId.Value);
+                }
+
+                var personalDetails = await query.ToListAsync();
+                var toReturn = new ApiResponse<List<PersonalDetails>>
+                {
+                    Data = personalDetails
+                };
+                return Ok(toReturn);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ApiResponse<string> { Error = ex.Message });
+            }
+        }
+        
+        
 
         [HttpPost]
         [Route("add")]
@@ -33,8 +70,10 @@ namespace PlayerManagementSystem.Controllers
         {
             await _context.PersonalDetails.AddAsync(personalDetails);
             await _context.SaveChangesAsync();
-            var toReturn = new ApiResponse<PersonalDetails>();
-            toReturn.Data = personalDetails;
+            var toReturn = new ApiResponse<PersonalDetails>
+            {
+                Data = personalDetails
+            };
             return Ok(personalDetails);
         }
 
