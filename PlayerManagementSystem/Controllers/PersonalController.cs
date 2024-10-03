@@ -58,7 +58,7 @@ namespace PlayerManagementSystem.Controllers
             personalDetailsToUpdate.PhoneNo = personalDetails.PhoneNo;
             personalDetailsToUpdate.Email = personalDetails.Email;
             personalDetailsToUpdate.Dob = personalDetails.Dob;
-            personalDetailsToUpdate.Team = personalDetails.Team;
+            personalDetailsToUpdate.TeamId = personalDetails.TeamId;
 
             await _context.SaveChangesAsync();
             return Ok(new ApiResponse<PersonalDetails>{
