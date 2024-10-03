@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PlayerManagementSystem.EfContext;
+using PlayerManagementSystem.Helpers;
 using PlayerManagementSystem.Models;
 
 namespace PlayerManagementSystem.Controllers
@@ -31,6 +32,27 @@ namespace PlayerManagementSystem.Controllers
             await _context.PersonalDetails.AddAsync(personalDetails);
             await _context.SaveChangesAsync();
             return Ok(personalDetails);
+        }
+
+        [HttpDelete]
+        [Route("delete/{id}")]
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            var personalDetails = await _context.PersonalDetails.Include(p => p.Role)
+                .Include(details => details.Addresses)
+                .Include(e => e.Team)
+                .FirstOrDefaultAsync(p => p.Id == id);
+            if (personalDetails == null)
+            {
+                return NotFound();
+            }
+
+            _context.Addresses.RemoveRange(personalDetails.Addresses);
+
+            _context.PersonalDetails.Remove(personalDetails);
+            await _context.SaveChangesAsync();
+            return Ok();
         }
     }
 }
