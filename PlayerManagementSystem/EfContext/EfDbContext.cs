@@ -6,8 +6,6 @@ namespace PlayerManagementSystem.EfContext;
 public class EfDbContext(DbContextOptions<EfDbContext> options) : DbContext(options)
 {
     public DbSet<Address> Addresses { get; set; }
-    
-    public DbSet<Ward> Wards { get; set; }
     public DbSet<Teams> Teams { get; set; }
     public DbSet<PersonalDetails> PersonalDetails { get; set; }
     public DbSet<Role> Role { get; set; }

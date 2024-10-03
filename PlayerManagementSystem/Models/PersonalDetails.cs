@@ -1,7 +1,10 @@
-﻿namespace PlayerManagementSystem.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PlayerManagementSystem.Models
 {
     public class PersonalDetails
     {
+        [Key]
         public int Id { get; set; }               // Primary Key for PersonalDetails
         public string ProfilePicUrl { get; set; } // URL for Profile Picture
         public string Name { get; set; }          // Full Name
