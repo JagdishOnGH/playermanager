@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using PlayerManagementSystem.EfContext;
@@ -19,7 +20,10 @@ namespace PlayerManagementSystem.Controllers
         [Route("all")]
         public async Task<IActionResult> GetAll()
         {
-            var teams = await _context.Teams.Include(p=>p.PersonalDetails).ThenInclude(r=>r.Role).ToListAsync();
+           //i need name of the team, name of the manager, name of the coach, names of players in the team
+           
+              var teams = await _context.Teams.Include(t => t.PersonalDetails).ToListAsync();
+              
             var toReturn = new ApiResponse<List<Teams>>();
             toReturn.Data = teams;
             return Ok(toReturn);
@@ -42,36 +46,63 @@ namespace PlayerManagementSystem.Controllers
         {
             try
             {
-                var team = await _context.Teams.Include(t => t.PersonalDetails).FirstOrDefaultAsync(t => t.TeamId == teamId);
-                var person = await _context.PersonalDetails.FirstOrDefaultAsync(p => p.Id == personId);
-                if (team == null)
+                var team = await _context.Teams
+                    .Include(p=>p.PersonalDetails)
+                    .ThenInclude(p=>p.Role)
+                    .FirstOrDefaultAsync(t => t.TeamId == teamId);
+                if(team == null)
                 {
                     return NotFound(new ApiResponse<string> { Error = "Team not found" });
                 }
-
-                if (person == null)
+                var personData =  _context.PersonalDetails.AsQueryable();
+                var person = await personData
+                    .Include(p=>p.Role)
+                    .FirstOrDefaultAsync(p => p.Id == personId);
+                if(person == null)
                 {
                     return NotFound(new ApiResponse<string> { Error = "Person not found" });
                 }
 
-                if (team.PersonalDetails.Contains(person))
+                if (team.PersonalDetails.Count > 14)
                 {
-                    return BadRequest(new ApiResponse<string> { Error = "Person already in team" });
+                    return BadRequest(new ApiResponse<string>
+                    {
+                        Data = "Team is full"
+                    });
                 }
-
-                if (team.PersonalDetails.Count >= 11)
+                //check if person is already in a team
+                if (team.PersonalDetails.Any(p => p.Id == person.Id))
                 {
-                    return BadRequest(new ApiResponse<string> { Error = "Team is full" });
+                    return BadRequest(new ApiResponse<string>
+                    {
+                        Data = "Person is already in a team"
+                    });
                 }
-
-                if (person.RoleId == 1 || person.RoleId == 2)
+                //add person to team if role is player
+                if (person.Role.RoleName.Equals("Player"))
                 {
-                    return BadRequest(new ApiResponse<string> { Error = "Person is manager or coach" });
+                    team.PersonalDetails.Add(person);
+                    await _context.SaveChangesAsync();
+                    return Ok(new ApiResponse<string> { Data = "Player added to team" });
                 }
+                
+                //check if team already has a manager or coach
+                if (team.PersonalDetails.Any(p => p.Role.RoleName.Equals(person.Role.RoleName)))
+                {
+                    return BadRequest(new ApiResponse<string>
+                    {
+                        Error = "Team already has a " + person.Role.RoleName
+                    });
 
+                }
+                //add person to team if role is manager or coach
                 team.PersonalDetails.Add(person);
                 await _context.SaveChangesAsync();
-                return Ok(new ApiResponse<Teams> { Data = team });
+                
+                
+                
+                
+                return Ok(new ApiResponse<string> { Data = $"{person.Role.RoleName} added to team" });
             }
             catch (Exception ex)
             {
@@ -93,7 +124,9 @@ namespace PlayerManagementSystem.Controllers
                     query = query.Where(p => p.TeamId == teamId.Value);
                 }
 
-                var teams = await query.ToListAsync();
+                var teams = await query
+                    .Include(p=>p.PersonalDetails)
+                    .ToListAsync();
                 var toReturn = new ApiResponse<List<Teams>>
                 {
                     Data = teams

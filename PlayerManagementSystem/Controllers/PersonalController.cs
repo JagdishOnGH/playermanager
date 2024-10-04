@@ -23,8 +23,10 @@ namespace PlayerManagementSystem.Controllers
                 
                
                 .ToListAsync();
-            var toReturn = new ApiResponse<List<PersonalDetails>>();
-            toReturn.Data = personalDetails;
+            var toReturn = new ApiResponse<List<PersonalDetails>>
+            {
+                Data = personalDetails
+            };
             return Ok(toReturn);
         }
         
