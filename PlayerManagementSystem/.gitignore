@@ -1,7 +1,7 @@
 ﻿# Ignore build outputs
 bin/
 obj/
-Migrations/
+
 obj/*
 
 # Ignore user-specific files

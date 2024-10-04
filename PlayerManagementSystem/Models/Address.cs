@@ -24,6 +24,9 @@ namespace PlayerManagementSystem.Models
         public string Country {get;set;}
 
         public bool IsPermanent { get; set; } = true;
+        
+        //public virtual ICollection<PersonalDetails> PersonalDetails { get; set; } = new List<PersonalDetails>();
+
 
 
     }

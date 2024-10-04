@@ -13,12 +13,14 @@ namespace PlayerManagementSystem.Models
         public TeamOf TeamOf { get; set; }
         public int AssociationId { get; set; }
         
-        
+        public ICollection<PersonalDetails> PersonalDetails { get; set; } = new List<PersonalDetails>();
 
 
 
-      
-        
+
+
+
+
     }
 
     public enum TeamOf

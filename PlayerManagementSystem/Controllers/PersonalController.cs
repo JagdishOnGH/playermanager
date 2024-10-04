@@ -9,7 +9,7 @@ namespace PlayerManagementSystem.Controllers
     [ApiController]
     [Route("/api/[controller]")]
     public class PersonalController(EfDbContext context) : ControllerBase
-    {
+    { 
         private readonly EfDbContext _context = context;
 
         [HttpGet]
@@ -20,7 +20,8 @@ namespace PlayerManagementSystem.Controllers
                 .PersonalDetails
                 .Include(p => p.Role)
                 .Include(details => details.Addresses)
-                .Include(e => e.Team)
+                
+               
                 .ToListAsync();
             var toReturn = new ApiResponse<List<PersonalDetails>>();
             toReturn.Data = personalDetails;
@@ -36,7 +37,7 @@ namespace PlayerManagementSystem.Controllers
                 var query = _context.PersonalDetails
                     .Include(p => p.Role)
                     .Include(details => details.Addresses)
-                    .Include(e => e.Team)
+                    
                     .AsQueryable();
 
                 if (ward.HasValue)
@@ -44,10 +45,7 @@ namespace PlayerManagementSystem.Controllers
                     query = query.Where(p => p.Addresses.Any(a => a.Ward == ward.Value));
                 }
 
-                if (teamId.HasValue)
-                {
-                    query = query.Where(p => p.TeamId == teamId.Value);
-                }
+               
 
                 var personalDetails = await query.ToListAsync();
                 var toReturn = new ApiResponse<List<PersonalDetails>>
@@ -85,7 +83,7 @@ namespace PlayerManagementSystem.Controllers
             try{
             var personalDetailsToUpdate = await _context.PersonalDetails.Include(p => p.Role)
                 .Include(details => details.Addresses)
-                .Include(e => e.Team)
+              
                 .FirstOrDefaultAsync(p => p.Id == id);
             if (personalDetailsToUpdate == null)
             {
@@ -97,7 +95,7 @@ namespace PlayerManagementSystem.Controllers
             personalDetailsToUpdate.PhoneNo = personalDetails.PhoneNo;
             personalDetailsToUpdate.Email = personalDetails.Email;
             personalDetailsToUpdate.Dob = personalDetails.Dob;
-            personalDetailsToUpdate.TeamId = personalDetails.TeamId;
+         
 
             await _context.SaveChangesAsync();
             return Ok(new ApiResponse<PersonalDetails>{
@@ -122,24 +120,24 @@ namespace PlayerManagementSystem.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             try{
-            var personalDetails = await _context.PersonalDetails.Include(p => p.Role)
-                .Include(details => details.Addresses)
-                .Include(e => e.Team)
-                .FirstOrDefaultAsync(p => p.Id == id);
-            if (personalDetails == null)
-            {
-                return NotFound();
-            }
+                var personalDetails = await _context.PersonalDetails.Include(p => p.Role)
+                    .Include(details => details.Addresses)
+               
+                    .FirstOrDefaultAsync(p => p.Id == id);
+                if (personalDetails == null)
+                {
+                    return NotFound();
+                }
 
-            _context.Addresses.RemoveRange(personalDetails.Addresses);
+                _context.Addresses.RemoveRange(personalDetails.Addresses);
 
-            _context.PersonalDetails.Remove(personalDetails);
-            await _context.SaveChangesAsync();
+                _context.PersonalDetails.Remove(personalDetails);
+                await _context.SaveChangesAsync();
 
-            return Ok(new ApiResponse<IEnumerable<PersonalDetails>>{
-                message = "Deleted Successfully",
-                Data = await _context.PersonalDetails.ToListAsync()
-            });
+                return Ok(new ApiResponse<IEnumerable<PersonalDetails>>{
+                    message = "Deleted Successfully",
+                    Data = await _context.PersonalDetails.ToListAsync()
+                });
             }
             catch(Exception ex)
             {
