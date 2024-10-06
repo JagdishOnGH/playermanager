@@ -3,8 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\USER\\OneDrive\\Desktop\\P2\\playermanager\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\USER\\OneDrive\\Desktop\\P2\\playermanager\\PlayerManagementSystem\\EfContext\\EfDbContext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:PlayerManagementSystem\\EfContext\\EfDbContext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D4C21876-A8E8-4671-84BD-0025BD17E065}|PlayerManagementSystem\\PlayerManagementSystem.csproj|c:\\users\\user\\onedrive\\desktop\\p2\\playermanager\\playermanagementsystem\\controllers\\wardcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D4C21876-A8E8-4671-84BD-0025BD17E065}|PlayerManagementSystem\\PlayerManagementSystem.csproj|solutionrelative:playermanagementsystem\\controllers\\wardcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D4C21876-A8E8-4671-84BD-0025BD17E065}|PlayerManagementSystem\\PlayerManagementSystem.csproj|c:\\users\\user\\onedrive\\desktop\\p2\\playermanager\\playermanagementsystem\\controllers\\teamcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D4C21876-A8E8-4671-84BD-0025BD17E065}|PlayerManagementSystem\\PlayerManagementSystem.csproj|solutionrelative:playermanagementsystem\\controllers\\teamcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,8 +18,34 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 45,
+          "SelectedChildIndex": 1,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "TeamController.cs",
+              "DocumentMoniker": "C:\\Users\\USER\\OneDrive\\Desktop\\P2\\playermanager\\PlayerManagementSystem\\Controllers\\TeamController.cs",
+              "RelativeDocumentMoniker": "PlayerManagementSystem\\Controllers\\TeamController.cs",
+              "ToolTip": "C:\\Users\\USER\\OneDrive\\Desktop\\P2\\playermanager\\PlayerManagementSystem\\Controllers\\TeamController.cs",
+              "RelativeToolTip": "PlayerManagementSystem\\Controllers\\TeamController.cs",
+              "ViewState": "AQIAAFQAAAAAAAAAAAAYwAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-06T08:01:46.26Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "WardController.cs",
+              "DocumentMoniker": "C:\\Users\\USER\\OneDrive\\Desktop\\P2\\playermanager\\PlayerManagementSystem\\Controllers\\WardController.cs",
+              "RelativeDocumentMoniker": "PlayerManagementSystem\\Controllers\\WardController.cs",
+              "ToolTip": "C:\\Users\\USER\\OneDrive\\Desktop\\P2\\playermanager\\PlayerManagementSystem\\Controllers\\WardController.cs",
+              "RelativeToolTip": "PlayerManagementSystem\\Controllers\\WardController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABoAAAAVAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-06T07:58:02.083Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
@@ -195,19 +225,6 @@
             {
               "$type": "Bookmark",
               "Name": "ST:124:0:{57d563b6-44a5-47df-85be-f4199ad6b651}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "EfDbContext.cs",
-              "DocumentMoniker": "C:\\Users\\USER\\OneDrive\\Desktop\\P2\\playermanager\\PlayerManagementSystem\\EfContext\\EfDbContext.cs",
-              "RelativeDocumentMoniker": "PlayerManagementSystem\\EfContext\\EfDbContext.cs",
-              "ToolTip": "C:\\Users\\USER\\OneDrive\\Desktop\\P2\\playermanager\\PlayerManagementSystem\\EfContext\\EfDbContext.cs",
-              "RelativeToolTip": "PlayerManagementSystem\\EfContext\\EfDbContext.cs",
-              "ViewState": "AQIAAAwAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-06T07:56:21.131Z",
-              "EditorCaption": ""
             }
           ]
         }

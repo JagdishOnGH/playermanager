@@ -11,6 +11,8 @@ public class EfDbContext(DbContextOptions<EfDbContext> options) : DbContext(opti
     public DbSet<Role> Role { get; set; }
     public DbSet<Ward> Wards { get; set; }
     public DbSet<Palika> Palikas { get; set; }
+
+    public DbSet<User> Users { get; set; }
    
    protected override void OnModelCreating(ModelBuilder mb)
    {
@@ -21,7 +23,10 @@ public class EfDbContext(DbContextOptions<EfDbContext> options) : DbContext(opti
            .HasConversion<int>(); //
      //  mb.Entity<PersonalDetails>().HasOne<Teams>(p=>p.Team).WithMany(t=>t.PersonalDetails).HasForeignKey(p=>p.TeamId).OnDelete(DeleteBehavior.Cascade);
        
-      
+       mb.Entity<User>()
+           .Property(u => u.Role)
+           .HasConversion<int>();
+       
        base.OnModelCreating(mb);
        
        

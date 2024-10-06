@@ -1,8 +1,10 @@
 {
   "ExpandedNodes": [
     "",
-    "\\PlayerManagementSystem"
+    "\\PlayerManagementSystem",
+    "\\PlayerManagementSystem\\EfContext",
+    "\\PlayerManagementSystem\\Properties"
   ],
-  "SelectedNode": "\\PlayerManagementSystem\\Helpers",
+  "SelectedNode": "\\PlayerManagementSystem\\EfContext\\EfDbContext.cs",
   "PreviewInSolutionExplorer": false
 }
