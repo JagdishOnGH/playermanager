@@ -8,6 +8,10 @@ namespace PlayerManagementSystem.Models
     public int PalikaId {get;set;} 
     
     public string Name {get;set;}
+ 
+    public ICollection<Teams> Teams { get; set; }
+
+    public ICollection<Ward> Wards { get; set; }
 
     
 }

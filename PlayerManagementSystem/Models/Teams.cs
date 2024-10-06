@@ -10,8 +10,8 @@ namespace PlayerManagementSystem.Models
 
         [Required]
         public string TeamName { get; set; }
-        public TeamOf TeamOf { get; set; }
-        public int AssociationId { get; set; }
+
+        public Guid CreatedBy { get; set; }
         
         public ICollection<PersonalDetails> PersonalDetails { get; set; } = new List<PersonalDetails>();
 
