@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using PlayerManagementSystem.EfDbContext;
+using PlayerManagementSystem.EfContext;
 
 var builder = WebApplication.CreateBuilder(args);
 

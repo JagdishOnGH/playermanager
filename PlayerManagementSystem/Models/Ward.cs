@@ -1,18 +1,15 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
-namespace PlayerManagementSystem.Models
+namespace PlayerManagementSystem.Models;
+
+public class Ward
 {
-    public class Ward
-    {
-        [Key]
-        public int WardId { get; set; }
-        [ForeignKey("RefPalika")]
-        public int PalikaId { get; set; }
-       
-        public List<int> Teams { get; set; } = new List<int>();
-
-        public virtual Palika RefPalika { get; set; }
-        public virtual ICollection<Teams> TeamList { get; set; } = new List<Teams>();
-    }
+    [Key]
+    public Guid Id { get; set; }
+    public int wardNo { get; set; }
+    
+    public ICollection<Teams> wardTeams { get; set; }
+    
+    
 }
