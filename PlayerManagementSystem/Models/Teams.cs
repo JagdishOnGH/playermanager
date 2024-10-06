@@ -15,12 +15,6 @@ namespace PlayerManagementSystem.Models
         
         public ICollection<PersonalDetails> PersonalDetails { get; set; } = new List<PersonalDetails>();
 
-
-
-
-
-
-
     }
 
     public enum TeamOf
