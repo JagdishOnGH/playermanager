@@ -7,22 +7,15 @@ using PlayerManagementSystem.Models;
 
 namespace PlayerManagementSystem.Controllers
 {
-    public class TeamController : ControllerBase
+    public class TeamController(EfDbContext context) : ControllerBase
     {
-        private readonly EfDbContext _context;
-
-        public TeamController(EfDbContext context)
-        {
-            _context = context;
-        }
-
         [HttpGet]
         [Route("all")]
         public async Task<IActionResult> GetAll()
         {
            //i need name of the team, name of the manager, name of the coach, names of players in the team
            
-              var teams = await _context.Teams.Include(t => t.PersonalDetails).ToListAsync();
+              var teams = await context.Teams.Include(t => t.PersonalDetails).ToListAsync();
               
             var toReturn = new ApiResponse<List<Teams>>();
             toReturn.Data = teams;
@@ -32,13 +25,6 @@ namespace PlayerManagementSystem.Controllers
         
         
         
-        //post, takes team id and player id from params and adds player to team
-        //making sure that person is not already in a team (find role of person ensure a team will have only one manager and coach) 
-        //if person is already in a team, return suitable information message
-        //if team is full, return suitable information message
-        //if person is manager or coach, return suitable information message and team already have them 
-        //team has PersonDetails list, add person to the list
-        //post, takes team id and personId from params and removes player from team
         
         [HttpGet]
         [Route("addplayer")]
@@ -46,7 +32,7 @@ namespace PlayerManagementSystem.Controllers
         {
             try
             {
-                var team = await _context.Teams
+                var team = await context.Teams
                     .Include(p=>p.PersonalDetails)
                     .ThenInclude(p=>p.Role)
                     .FirstOrDefaultAsync(t => t.TeamId == teamId);
@@ -54,7 +40,7 @@ namespace PlayerManagementSystem.Controllers
                 {
                     return NotFound(new ApiResponse<string> { Error = "Team not found" });
                 }
-                var personData =  _context.PersonalDetails.AsQueryable();
+                var personData =  context.PersonalDetails.AsQueryable();
                 var person = await personData
                     .Include(p=>p.Role)
                     .FirstOrDefaultAsync(p => p.Id == personId);
@@ -82,7 +68,7 @@ namespace PlayerManagementSystem.Controllers
                 if (person.Role.RoleName.Equals("Player"))
                 {
                     team.PersonalDetails.Add(person);
-                    await _context.SaveChangesAsync();
+                    await context.SaveChangesAsync();
                     return Ok(new ApiResponse<string> { Data = "Player added to team" });
                 }
                 
@@ -97,7 +83,7 @@ namespace PlayerManagementSystem.Controllers
                 }
                 //add person to team if role is manager or coach
                 team.PersonalDetails.Add(person);
-                await _context.SaveChangesAsync();
+                await context.SaveChangesAsync();
                 
                 
                 
@@ -117,7 +103,7 @@ namespace PlayerManagementSystem.Controllers
         {
             try
             {
-                var query = _context.Teams.AsQueryable();
+                var query = context.Teams.AsQueryable();
 
                 if (teamId.HasValue)
                 {
@@ -145,8 +131,8 @@ namespace PlayerManagementSystem.Controllers
         {
             try
             {
-                _context.Teams.Add(team);
-                await _context.SaveChangesAsync();
+                context.Teams.Add(team);
+                await context.SaveChangesAsync();
                 return Ok(new ApiResponse<Teams> { Data = team });
             }
             catch (Exception ex)
