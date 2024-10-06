@@ -9,9 +9,8 @@ public class EfDbContext(DbContextOptions<EfDbContext> options) : DbContext(opti
     public DbSet<Teams> Teams { get; set; }
     public DbSet<PersonalDetails> PersonalDetails { get; set; }
     public DbSet<Role> Role { get; set; }
+    public DbSet<Ward> Wards { get; set; }
     public DbSet<Palika> Palikas { get; set; }
-
-    public DbSet<User> Users {get; set;}
    
    protected override void OnModelCreating(ModelBuilder mb)
    {

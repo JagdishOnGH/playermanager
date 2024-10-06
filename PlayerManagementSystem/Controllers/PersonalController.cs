@@ -83,26 +83,27 @@ namespace PlayerManagementSystem.Controllers
         public async Task<IActionResult> Update(int id, PersonalDetails personalDetails)
         {
             try{
-            var personalDetailsToUpdate = await _context.PersonalDetails.Include(p => p.Role)
-                .Include(details => details.Addresses)
+                
+                var personalDetailsToUpdate = await _context.PersonalDetails.Include(p => p.Role)
+                    .Include(details => details.Addresses)
               
-                .FirstOrDefaultAsync(p => p.Id == id);
-            if (personalDetailsToUpdate == null)
-            {
-                return NotFound();
-            }
+                    .FirstOrDefaultAsync(p => p.Id == id);
+                if (personalDetailsToUpdate == null)
+                {
+                    return NotFound();
+                }
 
-            personalDetailsToUpdate.Name = personalDetails.Name;
-            personalDetailsToUpdate.ProfilePicUrl = personalDetails.ProfilePicUrl;
-            personalDetailsToUpdate.PhoneNo = personalDetails.PhoneNo;
-            personalDetailsToUpdate.Email = personalDetails.Email;
-            personalDetailsToUpdate.Dob = personalDetails.Dob;
+                personalDetailsToUpdate.Name = personalDetails.Name;
+                personalDetailsToUpdate.ProfilePicUrl = personalDetails.ProfilePicUrl;
+                personalDetailsToUpdate.PhoneNo = personalDetails.PhoneNo;
+                personalDetailsToUpdate.Email = personalDetails.Email;
+                personalDetailsToUpdate.Dob = personalDetails.Dob;
          
 
-            await _context.SaveChangesAsync();
-            return Ok(new ApiResponse<PersonalDetails>{
-                Data = personalDetailsToUpdate
-            });
+                await _context.SaveChangesAsync();
+                return Ok(new ApiResponse<PersonalDetails>{
+                    Data = personalDetailsToUpdate
+                });
 
 
             }
@@ -117,7 +118,7 @@ namespace PlayerManagementSystem.Controllers
 
 
         [HttpDelete]
-        [Route("delete/{id}")]
+        [Route("delete/{id:int}")]
 
         public async Task<IActionResult> Delete(int id)
         {
@@ -137,14 +138,14 @@ namespace PlayerManagementSystem.Controllers
                 await _context.SaveChangesAsync();
 
                 return Ok(new ApiResponse<IEnumerable<PersonalDetails>>{
-                    message = "Deleted Successfully",
+                    
                     Data = await _context.PersonalDetails.ToListAsync()
                 });
             }
             catch(Exception ex)
             {
                 return BadRequest(new ApiResponse<PersonalDetails>{
-                    message = "Failed to delete",
+                    message = "Failed",
                     Error = ex.Message
                 });
             }
