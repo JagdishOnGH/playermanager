@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PlayerManagementSystem.EfContext;
+using PlayerManagementSystem.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +10,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext <EfDbContext> (o => o.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().ConfigureApiBehaviorOptions(
+    options =>
+    {
+        options.SuppressModelStateInvalidFilter = true;
+    });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
 var app = builder.Build();

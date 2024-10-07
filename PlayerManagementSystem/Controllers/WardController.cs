@@ -26,7 +26,7 @@ namespace PlayerManagementSystem.Controllers
                 return StatusCode(500, new ApiResponse<string>
                     {
                         Error = e.Message,
-                        message = "Failed"
+                       
                         
                     })
                 ;

@@ -5,7 +5,7 @@
 namespace PlayerManagementSystem.Migrations
 {
     /// <inheritdoc />
-    public partial class world : Migration
+    public partial class name1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

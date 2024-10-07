@@ -137,7 +137,7 @@ namespace PlayerManagementSystem.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new ApiResponse<string> { Error = ex.Message, message = "Failed"});
+                return StatusCode(500, new ApiResponse<string> { Error = ex.Message, });
             }
         }
     }

@@ -2,20 +2,19 @@
 
 public class ApiResponse<T>
 {
-    public ApiResponse()
+    private string? _error;
+
+    public string message => !string.IsNullOrEmpty(Error) ? "Error" : "Success";
+
+    public string? Error
     {
-        if(this.Error != null)
+        get => _error;
+        set
         {
-            this.message = "Error";
+            _error = value;
+            // You can also update other related properties here if needed
         }
-        else
-        {
-            this.message = "Success";
-        }
-        
     }
-    public string message { get; set; } 
-    public string? Error { get; set; } 
     
     public T? Data { get; set; }
 }
