@@ -26,6 +26,7 @@ public class EfDbContext(DbContextOptions<EfDbContext> options) : DbContext(opti
        mb.Entity<User>()
            .Property(u => u.Role)
            .HasConversion<int>();
+     
        
        base.OnModelCreating(mb);
        

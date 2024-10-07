@@ -5,6 +5,7 @@ namespace PlayerManagementSystem.Models.Auth
 {
     public class RegisterDto
     {
+        
         [Required]
         [EmailAddress]
         public string Email { get; set; }
@@ -15,7 +16,7 @@ namespace PlayerManagementSystem.Models.Auth
         )]
         public string Password { get; set; }
 
-        [Required]
-        public Userrole Role { get; set; }
+        public Guid? PalikaId { get; set; }
+        
     }
 }
