@@ -108,7 +108,7 @@ namespace PlayerManagementSystem.Controllers
 
             }
             catch (Exception ex){
-                return BadRequest(new ApiResponse<PersonalDetails>{
+                return BadRequest(new ApiResponse<string>{
                   
                     Error = ex.Message
                 });
@@ -144,7 +144,7 @@ namespace PlayerManagementSystem.Controllers
             }
             catch(Exception ex)
             {
-                return BadRequest(new ApiResponse<PersonalDetails>{
+                return BadRequest(new ApiResponse<string>{
                  
                     Error = ex.Message
                 });

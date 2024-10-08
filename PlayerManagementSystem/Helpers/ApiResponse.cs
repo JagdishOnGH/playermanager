@@ -2,11 +2,11 @@
 
 public class ApiResponse<T>
 {
-    private string? _error;
+    private T? _error;
 
-    public string message => !string.IsNullOrEmpty(Error) ? "Error" : "Success";
+    public string message => !string.IsNullOrEmpty(Error.ToString()) ? "Error" : "Success";
 
-    public string? Error
+    public T? Error
     {
         get => _error;
         set

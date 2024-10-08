@@ -12,7 +12,7 @@ namespace PlayerManagementSystem.Models
         public string Password { get; set; }
         public Guid? PalikaId { get; set; }
         public Palika? Palika { get; set; }
-         public Guid? WardId { get; set; }
+         public Guid? WardId { get; set; }  
          public Ward? Ward { get; set; }
         public string Role 
         { 

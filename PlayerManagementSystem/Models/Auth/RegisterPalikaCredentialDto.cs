@@ -4,7 +4,7 @@
 
 namespace PlayerManagementSystem.Models.Auth;
 
-public class RegisterPalikaDto
+public class RegisterPalikaCredentialDto
 {
     [Required]
     [EmailAddress]

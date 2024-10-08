@@ -23,9 +23,7 @@ public class EfDbContext(DbContextOptions<EfDbContext> options) : DbContext(opti
            .HasConversion<int>(); //
      //  mb.Entity<PersonalDetails>().HasOne<Teams>(p=>p.Team).WithMany(t=>t.PersonalDetails).HasForeignKey(p=>p.TeamId).OnDelete(DeleteBehavior.Cascade);
        
-       mb.Entity<User>()
-           .Property(u => u.Role)
-           .HasConversion<int>();
+       
      
        
        base.OnModelCreating(mb);
