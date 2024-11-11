@@ -2,8 +2,8 @@
 
 public class Municipality
 {
-    int MunicipalityId { get; set; }
-    string Name { get; set; }
-    int DistrictId { get; set; }
-    District District { get; set; }
+    public int MunicipalityId { get; set; }
+    public string Name { get; set; }
+    public int DistrictId { get; set; }
+    public District District { get; set; }
 }

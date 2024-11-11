@@ -2,8 +2,8 @@
 
 public class Team
 {
-    int TeamId { get; set; }
-    string Name { get; set; }
-    string TerritoryType { get; set; }
-    int TerritoryId { get; set; } 
+   public int TeamId { get; set; }
+   public string Name { get; set; }
+   public string TerritoryType { get; set; }
+   public int TerritoryId { get; set; } 
 }

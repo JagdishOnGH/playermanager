@@ -3,13 +3,13 @@
 public class Person
 {
     //person id first name last name email address roleId (enum) teamId (foreign key)
-    int PersonId { get; set; }  
-    string FirstName { get; set; }
-    string LastName { get; set; }
-    string Email { get; set; }
-    Role Role { get; set; }
-    int TeamId { get; set; }
-    Team Team { get; set; }
+  public  int PersonId { get; set; }  
+   public string FirstName { get; set; }
+   public string LastName { get; set; }
+   public string Email { get; set; }
+   public Role Role { get; set; }
+   public int TeamId { get; set; }
+   public Team Team { get; set; }
     
 }
 public enum Role
