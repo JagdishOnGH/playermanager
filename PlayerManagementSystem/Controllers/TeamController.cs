@@ -6,10 +6,6 @@ namespace PlayerManagementSystem.Controllers;
 [Route("api/[controller]")]
 public class TeamController : ControllerBase
 {
-    public Task<IActionResult> CreateTeams(Team team)
-    {
-        throw new Exception(
-        );
-    }
+ 
     //
 }
