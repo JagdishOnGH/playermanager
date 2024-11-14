@@ -6,6 +6,7 @@ public class Team
    public string Name { get; set; }
    public TerritoryType TerritoryType { get; set; }
    public Guid TerritoryId { get; set; } 
+   public List<PersonTeam> PersonTeams { get; set; }
 }
 public enum TerritoryType
 {

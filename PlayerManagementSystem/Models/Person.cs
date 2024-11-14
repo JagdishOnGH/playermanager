@@ -10,6 +10,8 @@ public class Person
    public Role Role { get; set; }
    public Guid TeamId { get; set; }
    public Team Team { get; set; }
+   
+   public List<PersonTeam> PersonTeams { get; set; }
     
 }
 public enum Role
