@@ -77,6 +77,13 @@ public class MunicipalityController(EfDbContext context): ControllerBase
                 DistrictId = municipals.DistrictId,
                 Name = municipals.MunipalityName.ToUpper()
             };
+            context.Teams.Add(new Team
+            {
+                TeamId = Guid.NewGuid(),
+                Name = $"{municipals.MunipalityName}'s Team",
+                TerritoryId = newMun.MunicipalityId,
+                TerritoryType = TerritoryType.Municipality
+            });
             await context.Municipalities.AddAsync(newMun);
             await context.SaveChangesAsync();
 
