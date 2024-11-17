@@ -35,14 +35,15 @@ public class EfDbContext(DbContextOptions<EfDbContext> options) : DbContext(opti
           .HasKey(pt => new { pt.PersonId, pt.TeamId });
 
         modelBuilder.Entity<PersonTeam>()
-          .HasOne(pt => pt.Person)
-          .WithMany(p => p.PersonTeams)
+          .HasOne<Person>()
+          .WithMany()
           .HasForeignKey(pt => pt.PersonId);
+          ;
 
         modelBuilder.Entity<PersonTeam>()
-          .HasOne(pt => pt.Team)
-          .WithMany(t => t.PersonTeams)
-          .HasForeignKey(pt => pt.TeamId);
+          .HasOne<Team>()
+          .WithMany().HasForeignKey(t=>t.TeamId)
+          ;
      
       
       modelBuilder.Entity<Province>().HasData(
