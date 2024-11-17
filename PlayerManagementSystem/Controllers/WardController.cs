@@ -74,16 +74,23 @@ public class WardController(EfDbContext context): ControllerBase
             
             
             
-
+          
             var newWard = new Ward
             {
                 WardId = Guid.NewGuid(),
                 MunicipalityId = ward.MunicipalityId,
                 WardNo = ward.WardNo
             };
-            await context.Wards.AddAsync(newWard);
+          
+            context.Teams.Add(new Team
+            {
+                TeamId = Guid.NewGuid(),
+                Name = $"{ward.WardNo}'s Team",
+                TerritoryId = newWard.WardId,
+                TerritoryType = TerritoryType.Ward
+            }); 
+            await context.Wards.AddAsync(newWard); 
             await context.SaveChangesAsync();
-
             return Ok(newWard);
 
           
