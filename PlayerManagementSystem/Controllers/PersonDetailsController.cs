@@ -25,7 +25,7 @@ public class PersonDetailsController(EfDbContext context) : ControllerBase
                 Email = personDetails.Email,
             };
             var teamId = personDetails.TeamId;
-            var team = await context.Teams.FirstOrDefaultAsync(x => x.TeamId == teamId);
+            var team = await context.Teams.FirstOrDefaultAsync(x => x.TeamId == teamId );
             if (team == null)
             {
                 var error = new ApiResponse<string> { Error = "Team does not exist" };
@@ -34,10 +34,18 @@ public class PersonDetailsController(EfDbContext context) : ControllerBase
 
             if (team.TerritoryType != TerritoryType.Ward)
             {
-                //player can be added  by ward only.
                 var error = new ApiResponse<string> { Error = "Player can only be added by ward" };
                 return BadRequest(error);
             }
+
+            var personTeam = new PersonTeam
+            {
+                Person = person,
+                Team = team,
+            };
+            
+            
+            await context.PersonTeams.AddAsync(personTeam);
 
             await context.Persons.AddAsync(person);
             await context.SaveChangesAsync();

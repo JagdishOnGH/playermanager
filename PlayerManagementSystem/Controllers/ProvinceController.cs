@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PlayerManagementSystem.EfContext;
+using PlayerManagementSystem.Helper;
 using PlayerManagementSystem.Helpers;
 using PlayerManagementSystem.Models;
 
@@ -29,10 +30,9 @@ public class ProvinceController(EfDbContext context) : ControllerBase
         }
         catch (Exception e)
         {
-            var error = new ApiResponse<string>
-            {
-                Error = e.Message
-            };
+            var error = SharedHelper.CreateErrorResponse(e.Message);
+
+            
             return NotFound(error);
 
 
