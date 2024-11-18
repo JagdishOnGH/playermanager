@@ -57,6 +57,7 @@ public class TeamController(EfDbContext context) : ControllerBase
             );
             if (!isValidAssignment)
                 return BadRequest(SharedHelper.CreateErrorResponse("Player can't be assigned"));
+            await SharedHelper.ValidateTeamRolesAsync(teamId, person.Person.Role, context);
 
             await AssignPlayer(person.PersonId, toBeAssignedTeam.TeamId);
             return Ok(new ApiResponse<string> { Data = "Player assigned to team" });
@@ -82,6 +83,7 @@ public class TeamController(EfDbContext context) : ControllerBase
 
         return await context
             .PersonTeams.Include(t => t.Team)
+            .Include(p => p.Person)
             .FirstOrDefaultAsync(x =>
                 x.PersonId == playerId && x.Team.TerritoryType == requiredType
             );

@@ -28,7 +28,7 @@ public class EfDbContext(DbContextOptions<EfDbContext> options) : DbContext(opti
         modelBuilder.Entity<PersonTeam>().Property(pt => pt.PersonId).HasColumnType("uuid");
         modelBuilder.Entity<PersonTeam>().Property(pt => pt.TeamId).HasColumnType("uuid");
 
-        //relationship for person and team and personteam
+        //relationship for person and team and person team
         modelBuilder.Entity<PersonTeam>().HasKey(pt => new { pt.PersonId, pt.TeamId });
 
         modelBuilder
@@ -48,6 +48,7 @@ public class EfDbContext(DbContextOptions<EfDbContext> options) : DbContext(opti
             .HasData(
                 new Province
                 {
+                    
                     ProvinceId = Guid.Parse("d6c29e07-8824-4f31-bf07-9e0fbb39d9a8"),
                     Name = "Koshi",
                 },

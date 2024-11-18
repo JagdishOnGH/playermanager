@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using PlayerManagementSystem.DTOs;
 using PlayerManagementSystem.EfContext;
+using PlayerManagementSystem.Helper;
 using PlayerManagementSystem.Helpers;
 using PlayerManagementSystem.Models;
 
@@ -45,7 +46,9 @@ public class PersonDetailsController(EfDbContext context) : ControllerBase
             };
             
             
+         await   SharedHelper.ValidateTeamRolesAsync(personDetails.TeamId,personDetails.Role, context);
             await context.PersonTeams.AddAsync(personTeam);
+             
 
             await context.Persons.AddAsync(person);
             await context.SaveChangesAsync();
@@ -58,4 +61,8 @@ public class PersonDetailsController(EfDbContext context) : ControllerBase
             return BadRequest(error);
         }
     }
+     
+
+
 }
+
