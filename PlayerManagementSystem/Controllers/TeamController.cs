@@ -73,12 +73,13 @@ public class TeamController(EfDbContext context) : ControllerBase
         TerritoryType teamTerritoryType
     )
     {
-        TerritoryType requiredType = teamTerritoryType switch
+        var requiredType = teamTerritoryType switch
         {
             TerritoryType.Province => TerritoryType.District,
             TerritoryType.Municipality => TerritoryType.Ward,
             TerritoryType.District => TerritoryType.Municipality,
-            _ => throw new ArgumentOutOfRangeException(),
+            TerritoryType.Ward => 
+             throw new ArgumentOutOfRangeException(),
         };
 
         return await context
