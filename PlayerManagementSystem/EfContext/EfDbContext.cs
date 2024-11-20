@@ -1,10 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.General;
 using PlayerManagementSystem.Models;
+using PlayerManagementSystem.Models.AuthModel;
 
 namespace PlayerManagementSystem.EfContext;
 
-public class EfDbContext(DbContextOptions<EfDbContext> options) : DbContext(options)
+public class EfDbContext : IdentityDbContext<AppUser>
 {
+    public EfDbContext(DbContextOptions<EfDbContext> options)
+        : base(options) { }
+
     public DbSet<Province> Provinces { get; set; }
     public DbSet<District> Districts { get; set; }
     public DbSet<Municipality> Municipalities { get; set; }
@@ -48,7 +55,6 @@ public class EfDbContext(DbContextOptions<EfDbContext> options) : DbContext(opti
             .HasData(
                 new Province
                 {
-                    
                     ProvinceId = Guid.Parse("d6c29e07-8824-4f31-bf07-9e0fbb39d9a8"),
                     Name = "Koshi",
                 },
@@ -83,5 +89,18 @@ public class EfDbContext(DbContextOptions<EfDbContext> options) : DbContext(opti
                     Name = "Sudurpashchim",
                 }
             );
+        
+        base.OnModelCreating(modelBuilder);
+        // List<IdentityRole> roles =
+        // [
+        //     new IdentityRole { Name = "WardAdmin", NormalizedName = "WARD_ADMIN" },
+        //     new IdentityRole { Name = "MunicipalityAdmin", NormalizedName = "MUNICIPALITY_ADMIN" },
+        //     new IdentityRole { Name = "DistrictAdmin", NormalizedName = "DISTRICT_ADMIN" },
+        //     new IdentityRole { Name = "ProvinceAdmin", NormalizedName = "PROVINCE_ADMIN" },
+        //     new IdentityRole { Name = "SuperAdmin", NormalizedName = "SUPER_ADMIN" }
+        // ];
+        //
+        // modelBuilder.Entity<IdentityRole>().HasData(roles);
+        
     }
 }

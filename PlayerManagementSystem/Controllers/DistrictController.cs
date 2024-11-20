@@ -1,39 +1,56 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PlayerManagementSystem.DTOs;
 using PlayerManagementSystem.EfContext;
 using PlayerManagementSystem.Helpers;
 using PlayerManagementSystem.Models;
+using PlayerManagementSystem.Models.AuthModel;
 
 namespace PlayerManagementSystem.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+
 public class DistrictController(EfDbContext context) : ControllerBase
-{
+{  
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [HttpGet]
     [Route("all")]
+  
     public async Task<IActionResult> GetAllDistricts()
     {
         try
         {
+            
             var districts = await context.Districts.Include(d => d.Province).ToListAsync();
             var toReturn = new ApiResponse<List<District>> { Data = districts };
             return Ok(toReturn);
         }
         catch (Exception e)
         {
-            var error = new ApiResponse<string> { Error = e.Message };
-            return NotFound(error);
+            var error = new ApiResponse<string> { Error = e.Message+"HEllo" };
+            return BadRequest(error);
         }
     }
 
     [HttpPost]
     [Route("add")]
+    [Authorize(AuthenticationSchemes = "Bearer")]
+
+    
     public async Task<IActionResult> AddDistrict(DistrictDto district)
     {
         try
         {
+            if(!User.HasClaim("Role", "District"))
+            {
+                var error = new ApiResponse<string> { Error = "Unauthorized" };
+                return Unauthorized(error);
+            }
+            
             //with province id check if province exists
             var province = await context.Provinces.FirstOrDefaultAsync(x =>
                 x.ProvinceId == district.ProvinceId
@@ -76,6 +93,9 @@ public class DistrictController(EfDbContext context) : ControllerBase
         catch (Exception e)
         {
             var error = new ApiResponse<string> { Error = e.Message };
+            
+         
+            
             return NotFound(error);
         }
     }
