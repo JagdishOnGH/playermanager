@@ -1,4 +1,5 @@
 using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -19,8 +20,24 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
+        options.Events = new JwtBearerEvents
+        {
+            OnChallenge = context =>
+            {
+                // Suppress the default behavior
+                context.HandleResponse();
+
+                // Customize your response
+                context.Response.StatusCode = 401;
+                context.Response.ContentType = "application/json";
+
+                var response = SharedHelper.CreateErrorResponse("You are not authorized to access this resource");
+                return context.Response.WriteAsync(System.Text.Json.JsonSerializer.Serialize(response));
+            }
+        };
         options.TokenValidationParameters = new TokenValidationParameters
         {
+            
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateLifetime = true,
@@ -29,11 +46,14 @@ builder.Services.AddAuthentication("Bearer")
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
         };
+        
     });
+
 
 // Configure DbContext with PostgreSQL
 builder.Services.AddDbContext<EfDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
+builder.Services.AddCors(o => o.AddPolicy("AllowAll", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
 
 // Configure Identity with AppUser and IdentityRole
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
@@ -97,6 +117,7 @@ app.UseHttpsRedirection();
 // Enable Authentication and Authorization
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors("AllowAll");
 
 // Map controllers
 app.MapControllers();

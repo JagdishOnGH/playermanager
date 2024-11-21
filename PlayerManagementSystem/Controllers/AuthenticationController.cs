@@ -12,7 +12,11 @@ namespace PlayerManagementSystem.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthenticationController(UserManager<AppUser> userManager, EfDbContext context, JwtHelper helper) : ControllerBase
+public class AuthenticationController(
+    UserManager<AppUser> userManager,
+    EfDbContext context,
+    JwtHelper helper
+) : ControllerBase
 {
     [HttpPost]
     [Route("register")]
@@ -27,31 +31,42 @@ public class AuthenticationController(UserManager<AppUser> userManager, EfDbCont
 
 
                 // Return a BadRequest with validation errors
-                return BadRequest(new
-                {
-                    message = "Validation failed",
-                    errors = ModelState.Values.SelectMany(v => v.Errors)
-                        .Select(e => e.ErrorMessage)
-                });
+                return BadRequest(
+                    new
+                    {
+                        message = "Validation failed",
+                        errors = ModelState
+                            .Values.SelectMany(v => v.Errors)
+                            .Select(e => e.ErrorMessage),
+                    }
+                );
             }
 
             bool doesTerritoryExist = registerDto.Role switch
             {
-                TerritoryType.Province =>
-                    await context.Provinces.AnyAsync(x => x.ProvinceId == registerDto.TerritoryId),
-                TerritoryType.District =>
-                    await context.Districts.AnyAsync(x => x.DistrictId == registerDto.TerritoryId),
+                TerritoryType.Province => await context.Provinces.AnyAsync(x =>
+                    x.ProvinceId == registerDto.TerritoryId
+                ),
+
+                TerritoryType.District => await context.Districts.AnyAsync(x =>
+                    x.DistrictId == registerDto.TerritoryId
+                ),
                 TerritoryType.Municipality => await context.Municipalities.AnyAsync(x =>
-                    x.MunicipalityId == registerDto.TerritoryId),
-                TerritoryType.Ward => await context.Wards.AnyAsync(x => x.WardId == registerDto.TerritoryId),
-                _ => throw new ArgumentOutOfRangeException(nameof(registerDto.Role))
+                    x.MunicipalityId == registerDto.TerritoryId
+                ),
+                TerritoryType.Ward => await context.Wards.AnyAsync(x =>
+                    x.WardId == registerDto.TerritoryId
+                ),
+                _ => throw new ArgumentOutOfRangeException(nameof(registerDto.Role)),
             };
 
             if (!doesTerritoryExist)
             {
                 return BadRequest(
                     SharedHelper.CreateErrorResponse(
-                        "Territory does not exist, Check ID is matching with the territory type"));
+                        "Territory does not exist, Check ID is matching with the territory type"
+                    )
+                );
             }
 
             var newUser = new AppUser
@@ -84,7 +99,9 @@ public class AuthenticationController(UserManager<AppUser> userManager, EfDbCont
 
             // Instead of using ToString(), extract error messages from IdentityResult.Errors
             var errorMessages = result.Errors.Select(e => e.Description).ToList();
-            var userCreationError = SharedHelper.CreateErrorResponse(string.Join(", ", errorMessages));
+            var userCreationError = SharedHelper.CreateErrorResponse(
+                string.Join(", ", errorMessages)
+            );
 
             return BadRequest(userCreationError);
         }
@@ -115,16 +132,14 @@ public class AuthenticationController(UserManager<AppUser> userManager, EfDbCont
             }
 
             var roles = await userManager.GetRolesAsync(user);
-            
+
             var token = helper.GenerateJwt(user, roles[0]);
 
             var toReturn = new Dictionary<string, object>
             {
                 { "message", "Login successful" },
                 { "userId", user.Id },
-                
                 { "token", token },
-                
             };
 
             return Ok(toReturn);
@@ -134,7 +149,5 @@ public class AuthenticationController(UserManager<AppUser> userManager, EfDbCont
             var error = SharedHelper.CreateErrorResponse(e.Message);
             return BadRequest(error);
         }
-
     }
 }
-

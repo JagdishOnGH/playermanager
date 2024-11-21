@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PlayerManagementSystem.DTOs;
 using PlayerManagementSystem.EfContext;
@@ -28,60 +29,63 @@ public class MunicipalityController(EfDbContext context) : ControllerBase
             return NotFound(error);
         }
     }
-
-    [HttpPost]
-    [Route("add")]
-    public async Task<IActionResult> AddDistrict(MunicipalsDto municipals)
+    [HttpGet]
+    [Route("myteams")]
+    [Authorize(AuthenticationSchemes = "Bearer")]
+    public async Task<IActionResult> GetMyTeam()
     {
         try
         {
-            //with province id check if province exists
-            var province = await context.Districts.FirstOrDefaultAsync(x =>
-                x.DistrictId == municipals.DistrictId
-            );
-            if (province == null)
+            if(!User.HasClaim("Role", TerritoryType.Municipality.ToString()))
             {
-                var error = SharedHelper.CreateErrorResponse(
-                    $"District does not exist with id {municipals.DistrictId} "
-                );
-                return NotFound(error);
-            }
-            //also under same province check if district name or id exists
-            var municipalExistsByName = await context.Municipalities.FirstOrDefaultAsync(x =>
-                x.Name.ToUpper() == municipals.MunipalityName.ToUpper()
-            );
-            if (municipalExistsByName != null)
-            {
-                // var error = new ApiResponse<string> { Error = "Municipality already exists" };
-                var error = SharedHelper.CreateErrorResponse("Municipality already exists");
+                var error = SharedHelper.CreateErrorResponse("You are not authorized to perform this action");
                 return BadRequest(error);
             }
-
-            var newMun = new Municipality
+            
+            var validationErr = SharedHelper.ModelValidationCheck(ModelState);
+            if (validationErr != null)
             {
-                MunicipalityId = Guid.NewGuid(),
-                DistrictId = municipals.DistrictId,
-                Name = municipals.MunipalityName.ToUpper(),
+                var error = SharedHelper.CreateErrorResponse(validationErr);
+                return BadRequest(error);
+            }
+            var tokenWardId = User.Claims.FirstOrDefault(x => x.Type == "TerritoryId")?.Value;
+            if (tokenWardId == null)
+            {
+                var error = SharedHelper.CreateErrorResponse("Municipality not found");
+                return BadRequest(error);
+            }
+            var myTeam = await context.Teams.FirstOrDefaultAsync(x => x.TerritoryId == Guid.Parse(tokenWardId));
+            if (myTeam == null)
+            {
+                var error = SharedHelper.CreateErrorResponse("Team not found");
+                return BadRequest(error);
+            }
+            var myPlayers = await context.PersonTeams
+                .Include(pt => pt.Person)
+                .Where(pt => pt.TeamId == myTeam.TeamId)
+                .Select(pt => pt.Person)
+                .ToListAsync();
+            //categorise players
+            var dataToReturn = new Dictionary<string,object>
+            {
+                { "players", myPlayers.Where(p => p.Role == Role.Player).ToList() },
+                { "coaches", myPlayers.Where(p => p.Role == Role.Coach).ToList() },
+                { "managers", myPlayers.Where(p => p.Role == Role.Manager).ToList() },
+                { "teamName", myTeam.Name },
             };
-            context.Teams.Add(
-                new Team
-                {
-                    TeamId = Guid.NewGuid(),
-                    Name = $"{municipals.MunipalityName}'s Team",
-                    TerritoryId = newMun.MunicipalityId,
-                    TerritoryType = TerritoryType.Municipality,
-                }
-            );
-            await context.Municipalities.AddAsync(newMun);
-            await context.SaveChangesAsync();
-
-            return Ok(newMun);
+            
+            
+            
+            var toReturn = new ApiResponse<Dictionary<string,object>> { Data = dataToReturn };
+            return Ok(toReturn);
+            
         }
         catch (Exception e)
         {
-            //       var error = new ApiResponse<string> { Error = e.Message };
-            var error = SharedHelper.CreateErrorResponse(e.Message);
-            return NotFound(error);
+            var error = SharedHelper.CreateErrorResponse("Something went wrong");
+            return StatusCode(500, error);
         }
     }
+
+    
 }

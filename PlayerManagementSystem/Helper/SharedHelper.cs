@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore;
 using PlayerManagementSystem.EfContext;
 using PlayerManagementSystem.Helpers;
 using PlayerManagementSystem.Models;
@@ -7,21 +8,29 @@ namespace PlayerManagementSystem.Helper;
 
 public static class SharedHelper
 {
-   public static  ApiResponse<string> CreateErrorResponse(string message)
+    public static ApiResponse<string> CreateErrorResponse(string message)
     {
         return new ApiResponse<string> { Error = message };
     }
+
+    public static string? ModelValidationCheck(ModelStateDictionary modelState)
+    {
+        if(!modelState.IsValid)
+        {
+            return   modelState.Values.SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage).ToString();
+        }
+        return null;
+        
+    }
+
     public static async Task ValidateTeamRolesAsync(Guid teamId, Role role, EfDbContext context)
     {
         // Count the number of players, coaches, and managers in the team
-        var roleCounts = await context.PersonTeams
-            .Where(pt => pt.TeamId == teamId)
+        var roleCounts = await context
+            .PersonTeams.Where(pt => pt.TeamId == teamId)
             .GroupBy(pt => pt.Person.Role)
-            .Select(g => new
-            {
-                Role = g.Key,
-                Count = g.Count()
-            })
+            .Select(g => new { Role = g.Key, Count = g.Count() })
             .ToListAsync();
 
         // Get current counts for each role
@@ -35,7 +44,6 @@ public static class SharedHelper
             case Role.Player: // Player
                 if (playerCount >= 12)
                 {
-             
                     throw new Exception("Max player reached");
                 }
                 break;
@@ -53,11 +61,6 @@ public static class SharedHelper
                     throw new Exception("Team already has 1 manager");
                 }
                 break;
-
-        
-           
         }
-
-
     }
 }

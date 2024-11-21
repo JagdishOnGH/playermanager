@@ -19,6 +19,7 @@ namespace PlayerManagementSystem.Helper
         {
             _configuration = configuration;
             _userManager = userManager;
+            
         }
 
         public  string GenerateJwt(AppUser user, string role)
@@ -36,7 +37,7 @@ namespace PlayerManagementSystem.Helper
                 _configuration["Jwt:Issuer"],
                 _configuration["Jwt:Audience"],
                 allClaims,
-                expires: DateTime.Now.AddMinutes(30),
+                expires: DateTime.Now.AddDays(3),
                 signingCredentials: credentials
             );
             var token = new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
