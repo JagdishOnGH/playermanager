@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PlayerManagementSystem.DTOs;
 using PlayerManagementSystem.EfContext;
@@ -31,27 +32,37 @@ public class WardController(EfDbContext context) : ControllerBase
     }
 
     [HttpPost]
-    [Route("add")]
+    [Route("addwards")]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public async Task<IActionResult> AddWard(WardDto ward)
     {
         try
         {
-            //with province id check if province exists
-            var municipal = await context.Municipalities.FirstOrDefaultAsync(x =>
-                x.MunicipalityId == ward.MunicipalityId
-            );
-            if (municipal == null)
+            if (!User.HasClaim("Role", "Municipality"))
             {
                 var error = SharedHelper.CreateErrorResponse(
-                    $"Municipality does not exist with id {ward.MunicipalityId} "
+                    "You are not authorized to perform this action"
                 );
-
-                return NotFound(error);
+                return BadRequest(error);
             }
-            //also under same province check if district name or id exists
-            var wardNoExist = await context.Wards.FirstOrDefaultAsync(x =>
-                x.WardNo.ToUpper() == ward.WardNo.ToUpper()
-            );
+            var tokenMunicipalId = User.Claims.FirstOrDefault(x => x.Type == "TerritoryId")?.Value;
+            if (tokenMunicipalId == null)
+            {
+                var error = SharedHelper.CreateErrorResponse("Municipality not found");
+                return BadRequest(error);
+            }
+
+            var validationErr = SharedHelper.ModelValidationCheck(ModelState);
+            if (validationErr != null)
+            {
+                var error = SharedHelper.CreateErrorResponse(validationErr);
+                return BadRequest(error);
+            }
+            //use muncipal id and check if same word no exists or not
+            var wardQuery = context
+                .Wards.Where(m => m.MunicipalityId == Guid.Parse(tokenMunicipalId))
+                .AsQueryable();
+            var wardNoExist = await wardQuery.FirstOrDefaultAsync(x => x.WardNo == ward.WardNo);
 
             if (wardNoExist != null)
             {
@@ -59,28 +70,37 @@ public class WardController(EfDbContext context) : ControllerBase
                     $"Ward No  already exists with {ward.WardNo}"
                 );
 
-                return NotFound(error);
+                return BadRequest(error);
             }
-
-            var newWard = new Ward
+            var myWard = new Ward
             {
                 WardId = Guid.NewGuid(),
-                MunicipalityId = ward.MunicipalityId,
+                MunicipalityId = Guid.Parse(tokenMunicipalId),
                 WardNo = ward.WardNo,
             };
+            var municipality = await context.Municipalities.FirstOrDefaultAsync(x =>
+                x.MunicipalityId == Guid.Parse(tokenMunicipalId)
+            );
+            if (municipality == null)
+            {
+                var error = SharedHelper.CreateErrorResponse(
+                    $"Municipality does not exist with id {tokenMunicipalId} "
+                );
+                return NotFound(error);
+            }
 
             context.Teams.Add(
                 new Team
                 {
                     TeamId = Guid.NewGuid(),
-                    Name = $"{municipal.Name} Ward No {ward.WardNo}'s Team",
-                    TerritoryId = newWard.WardId,
+                    Name = $"{municipality.Name} Ward No {ward.WardNo}'s Team",
+                    TerritoryId = myWard.WardId,
                     TerritoryType = TerritoryType.Ward,
                 }
             );
-            await context.Wards.AddAsync(newWard);
+            await context.Wards.AddAsync(myWard);
             await context.SaveChangesAsync();
-            return Ok(newWard);
+            return Ok(myWard);
         }
         catch (Exception e)
         {
