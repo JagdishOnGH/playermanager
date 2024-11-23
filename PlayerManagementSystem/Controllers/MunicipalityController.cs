@@ -164,5 +164,110 @@ public class MunicipalityController(EfDbContext context) : ControllerBase
         }
     }
 
+    [HttpPost("add-person")]
+    [Authorize(AuthenticationSchemes = "Bearer")]
+    //by guuid same as dist controller
+    public async Task<IActionResult> AddPerson([FromBody] Guid playerId)
+    {
+        try
+        {
+            if (!User.HasClaim("Role", TerritoryType.Municipality.ToString()))
+            {
+                var error = SharedHelper.CreateErrorResponse("You are not authorized to perform this action");
+                return BadRequest(error);
+            }
+
+            var validationErr = SharedHelper.ModelValidationCheck(ModelState);
+            if (validationErr != null)
+            {
+                var error = SharedHelper.CreateErrorResponse(validationErr);
+                return BadRequest(error);
+            }
+
+            var tokenMunId = User.Claims.FirstOrDefault(x => x.Type == "TerritoryId")?.Value;
+            if (tokenMunId == null)
+            {
+                var error = SharedHelper.CreateErrorResponse("Municipality not found");
+                return BadRequest(error);
+            }
+            var munId = Guid.Parse(tokenMunId);
+            var playerDetails = await context
+                .Persons.Where(p => p.PersonId == playerId)
+                .Select(p => new
+                {
+                    Player = p,
+                    MunicipalityTeam = context.Teams.FirstOrDefault(t => t.TerritoryId == munId),
+                    ExistingPersonTeam = context.PersonTeams.FirstOrDefault(pt =>
+                        pt.PersonId == playerId && pt.Team.TerritoryId == munId
+                    ),
+                    PlayerTeam = context
+                        .PersonTeams.Include(pt=>pt.Team).Where(pt =>
+                            pt.PersonId == playerId
+                            && pt.Team.TerritoryType == TerritoryType.Ward
+                        )
+                        .Select(pt => new
+                        {
+                            Team = pt.Team,
+                            Ward = context.Wards.FirstOrDefault(m =>
+                                m.MunicipalityId == pt.Team.TerritoryId
+                            ),
+                        })
+                        .FirstOrDefault(),
+                })
+                .FirstOrDefaultAsync();
+            // Validate retrieved data
+            if (playerDetails?.Player == null)
+            {
+                return BadRequest(SharedHelper.CreateErrorResponse("Player not found"));
+            }
+
+            if (playerDetails.MunicipalityTeam == null)
+            {
+                return BadRequest(SharedHelper.CreateErrorResponse("Municipality's team not found"));
+            }
+
+            if (playerDetails.ExistingPersonTeam != null)
+            {
+                return BadRequest(
+                    SharedHelper.CreateErrorResponse("Player is already part of this team")
+                );
+            }
+
+            if (
+                playerDetails.PlayerTeam?.Ward != null
+                && playerDetails.PlayerTeam.Ward.MunicipalityId != munId
+            )
+            {
+                return BadRequest(
+                    SharedHelper.CreateErrorResponse("Player is not under our wards (Municipality)")
+                );
+            }
+
+            // Assign the player to the district team
+            var newPersonTeam = new PersonTeam
+            {
+                PersonId = playerId,
+                TeamId = playerDetails.MunicipalityTeam.TeamId,
+            };
+            
+
+            context.PersonTeams.Add(newPersonTeam);
+            await context.SaveChangesAsync();
+            return Ok(new ApiResponse<Person> { Data = playerDetails.Player });
+
+        }
+        catch (Exception e)
+        {
+            var error = SharedHelper.CreateErrorResponse("Something went wrong");
+            return StatusCode(500, error);
+        }
+
+
+
+
+     
+    }
+    
+
     
 }
