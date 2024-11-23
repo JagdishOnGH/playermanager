@@ -89,7 +89,7 @@ public class DistrictController(EfDbContext context) : ControllerBase
     [HttpGet]
     [Route("add-person")]
     [Authorize(AuthenticationSchemes = "Bearer")]
-    public async Task<IActionResult> AddPerson(Guid playerId)
+    public async Task<IActionResult> AddPerson([FromBody]Guid playerId)
     {
         try
         {
