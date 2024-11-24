@@ -18,6 +18,8 @@ public class TeamController(EfDbContext context) : ControllerBase
         try
         {
             var teams = await context.Teams.ToListAsync();
+            
+            
             var toReturn = new ApiResponse<List<Team>> { Data = teams };
             return Ok(toReturn);
         }
