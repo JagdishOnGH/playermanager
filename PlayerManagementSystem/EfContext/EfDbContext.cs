@@ -89,6 +89,58 @@ public class EfDbContext : IdentityDbContext<AppUser>
                     Name = "Sudurpashchim",
                 }
             );
+        modelBuilder.Entity<Team>().HasData(new Team
+            {
+                TeamId = Guid.Parse("79b1d3f5-7f28-4f47-b3ed-7a36b721fb13"),
+                Name = "Koshi Team",
+                TerritoryType = TerritoryType.Province,
+                TerritoryId = Guid.Parse("d6c29e07-8824-4f31-bf07-9e0fbb39d9a8")
+            }
+            , new Team
+            {
+                TeamId = Guid.Parse("a296f452-9ee0-4607-922e-39ae666a083a"),
+                Name = "Madhesh Team",
+                TerritoryType = TerritoryType.Province,
+                TerritoryId = Guid.Parse("8a2b99b3-c36f-4a4f-9e5b-2939efba2b30")
+            },
+            new Team
+            {
+                TeamId = Guid.Parse("fb21a147-6546-4a17-9e68-549bdbcee16c"),
+                Name = "Bagmati Team",
+                TerritoryType = TerritoryType.Province,
+                TerritoryId = Guid.Parse("e5724aef-2d64-4fd4-9e1c-8f0d05e2e7b4")
+            },
+            new Team
+            {
+                TeamId = Guid.Parse("e62a9871-51b5-4c2b-aca1-571bada67f59"),
+                Name = "Gandaki Team",
+                TerritoryType = TerritoryType.Province,
+                TerritoryId = Guid.Parse("f2123c8b-37df-4a41-97fc-584c1af4d07d")
+            },
+            new Team
+            {
+                TeamId = Guid.Parse("f3b1d3f5-7f28-4f47-b3ed-7a36b721fb13"),
+                Name = "Lumbini Team",
+                TerritoryType = TerritoryType.Province,
+                TerritoryId = Guid.Parse("aec679cb-958e-4cd7-8f41-cc9a76276a3e")
+            },
+            new Team
+            {
+                TeamId = Guid.Parse("c296f452-9ee0-4607-922e-39ae666a083a"),
+                Name = "Karnali Team",
+                TerritoryType = TerritoryType.Province,
+                TerritoryId = Guid.Parse("2b8d6ad7-83b6-4972-a5d7-d84b1c40d8c4")
+            },
+            new Team
+            {
+                TeamId = Guid.Parse("eb21a147-6546-4a17-9e68-549bdbcee16c"),
+                Name = "Sudurpashchim Team",
+                TerritoryType = TerritoryType.Province,
+                TerritoryId = Guid.Parse("aa6b64b7-6551-45c3-a988-b1d9be35d8cd")
+            }
+        );
+        
+            
         
         base.OnModelCreating(modelBuilder);
         // List<IdentityRole> roles =
