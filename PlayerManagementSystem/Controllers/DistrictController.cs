@@ -234,6 +234,13 @@ public class DistrictController(EfDbContext context) : ControllerBase
                             .Where(pt => pt.TeamId == t.TeamId)
                             .Include(pt => pt.Person)
                             .Include(pt => pt.Team)
+                            .Select(pt=> new
+                            {
+                                name=pt.Person.FirstName+" "+pt.Person.LastName,
+                                role=pt.Person.Role.ToString(),
+                                team=pt.Team.Name,
+                                teamId=pt.Team.TeamId
+                            })
                         ) // Select Player IDs
                         .Distinct() // Remove duplicate players in this municipality
                         .ToList() // Convert players to a list
