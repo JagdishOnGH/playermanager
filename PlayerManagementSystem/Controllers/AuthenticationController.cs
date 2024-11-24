@@ -148,6 +148,7 @@ public class AuthenticationController(
                 { "message", "Login successful" },
                 { "userId", user.Id },
                 { "token", token },
+                {"teamId", myTeamId}
             };
 
             return Ok(toReturn);
