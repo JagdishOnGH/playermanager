@@ -29,6 +29,79 @@ public class MunicipalityController(EfDbContext context) : ControllerBase
             return NotFound(error);
         }
     }
+
+    [HttpGet("available-to-add")]
+    [Authorize(AuthenticationSchemes = "Bearer")]
+    public async Task<IActionResult> GetAvailablePlayers()
+    {
+        try
+        {
+            // Verify user role
+            if (!User.HasClaim("Role", TerritoryType.Municipality.ToString()))
+            {
+                return BadRequest(
+                    SharedHelper.CreateErrorResponse(
+                        "You are not a Municipality admin to perform this action"
+                    )
+                );
+            }
+
+            // Check for model validation errors
+            var validationErr = SharedHelper.ModelValidationCheck(ModelState);
+            if (validationErr != null)
+            {
+                return BadRequest(SharedHelper.CreateErrorResponse(validationErr));
+            }
+
+            // Extract district ID from the token
+            var tokenMunicipality = User.Claims.FirstOrDefault(x => x.Type == "TerritoryId")?.Value;
+            if (string.IsNullOrEmpty(tokenMunicipality))
+            {
+                return BadRequest(
+                    SharedHelper.CreateErrorResponse("Municipality not found in token")
+                );
+            }
+
+            var municipalId = Guid.Parse(tokenMunicipality);
+            var municipalityPlayers = await context
+                .Wards.Where(m => m.MunicipalityId == municipalId) // Filter municipalities by district
+                .Select(m2 => new
+                {
+                    m2.WardNo, // Replace with the actual column/property for municipality name
+                    Players = context
+                        .Teams.Where(t => t.TerritoryId == m2.WardId) // Filter teams by municipality
+                        .SelectMany(t =>
+                            context
+                                .PersonTeams.Include(pt => pt.Person)
+                                .Include(pt => pt.Team)
+                                .Where(pt => pt.TeamId == t.TeamId)
+                                .Select(pt => new
+                                {
+                                    name = pt.Person.FirstName + " " + pt.Person.LastName,
+                                    role = pt.Person.Role.ToString(),
+                                    team = pt.Team.Name,
+                                    teamId = pt.Team.TeamId,
+                                })
+                        ) // Select Player IDs
+                        .ToList() // Convert players to a list
+                    ,
+                })
+                .ToListAsync(); // Execute query
+            //            Execute query//
+            // nvert the result to a list of municipalities
+
+            var result = new ApiResponse<object> { Data = municipalityPlayers }; // Execute and materialize the result
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            var error = SharedHelper.CreateErrorResponse("Something went wrong: " + e.Message);
+            return StatusCode(500, error);
+        }
+
+        return Ok("OK");
+    }
+
     [HttpPost]
     [Route("addwards")]
     [Authorize(AuthenticationSchemes = "Bearer")]
