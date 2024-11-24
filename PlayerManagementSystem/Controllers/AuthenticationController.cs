@@ -135,6 +135,13 @@ public class AuthenticationController(
             var roles = await userManager.GetRolesAsync(user);
 
             var token = helper.GenerateJwt(user, roles[0]);
+            var myTeamId = context.Teams.FirstOrDefault(x => x.TerritoryId == user.TerritoryId)?.TeamId;
+            if (myTeamId == null)
+            {
+                return NotFound(SharedHelper.CreateErrorResponse("Team not found"));
+            }
+            
+            
 
             var toReturn = new Dictionary<string, object>
             {
