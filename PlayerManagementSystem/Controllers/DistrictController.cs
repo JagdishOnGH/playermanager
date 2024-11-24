@@ -12,7 +12,7 @@ namespace PlayerManagementSystem.Controllers;
 [Route("api/[controller]")]
 public class DistrictController(EfDbContext context) : ControllerBase
 {
-    [Authorize(AuthenticationSchemes = "Bearer")]
+    
     [HttpGet]
     [Route("all")]
     public async Task<IActionResult> GetAllDistricts()
@@ -86,7 +86,7 @@ public class DistrictController(EfDbContext context) : ControllerBase
         }
     }
 
-    [HttpGet]
+    [HttpPost]
     [Route("add-person")]
     [Authorize(AuthenticationSchemes = "Bearer")]
     public async Task<IActionResult> AddPerson([FromBody]Guid playerId)
