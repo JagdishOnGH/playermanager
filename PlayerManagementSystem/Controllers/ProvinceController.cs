@@ -233,8 +233,46 @@ public class ProvinceController(EfDbContext context) : ControllerBase
                         .FirstOrDefault(),
                 })
                 .FirstOrDefaultAsync();
-            return Ok("OK");
+            if (playerDetails?.Player == null)
+            {
+                return BadRequest(SharedHelper.CreateErrorResponse("Player not found"));
+            }
+
+            if (playerDetails.ProvinceTeam == null)
+            {
+                return BadRequest(SharedHelper.CreateErrorResponse("District's team not found"));
+            }
+
+            if (playerDetails.ExistingPersonTeam != null)
+            {
+                return BadRequest(
+                    SharedHelper.CreateErrorResponse("Player is already part of this team")
+                );
+            }
+
+            if (
+                playerDetails.PlayerTeam?.District!= null
+                && playerDetails.PlayerTeam.District.ProvinceId != provinceGuid
+            )
+            {
+                return BadRequest(
+                    SharedHelper.CreateErrorResponse("Player is not in the correct district")
+                );
+            }
+
+            // Assign the player to the district team
+            var newPersonTeam = new PersonTeam
+            {
+                PersonId = playerId,
+                TeamId = playerDetails.ProvinceTeam.TeamId,
+            };
+
+            context.PersonTeams.Add(newPersonTeam);
+            await context.SaveChangesAsync();
+
+            return Ok(new ApiResponse<Person> { Data = playerDetails.Player });
         }
+        
         catch (Exception e)
         {
             var error = SharedHelper.CreateErrorResponse("Something went wrong");
