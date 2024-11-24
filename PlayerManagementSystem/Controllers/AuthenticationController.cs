@@ -24,6 +24,7 @@ public class AuthenticationController(
     {
         try
         {
+            
             // Return BadRequest if model state is invalid
             if (!ModelState.IsValid)
             {
