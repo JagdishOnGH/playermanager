@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PlayerManagementSystem.DTOs;
 using PlayerManagementSystem.EfContext;
@@ -53,7 +54,7 @@ public class PersonDetailsController(EfDbContext context) : ControllerBase
                 Email = personDetails.Email,
             };
             
-            var teamId = personDetails.TeamId;
+            var teamId = myTeam.TeamId;
             var team = await context.Teams.FirstOrDefaultAsync(x => x.TeamId == teamId );
             if (team == null)
             {
@@ -74,7 +75,7 @@ public class PersonDetailsController(EfDbContext context) : ControllerBase
             };
             
             
-         await   SharedHelper.ValidateTeamRolesAsync(personDetails.TeamId,personDetails.Role, context);
+         await   SharedHelper.ValidateTeamRolesAsync(teamId,personDetails.Role, context);
             await context.PersonTeams.AddAsync(personTeam);
              
 
