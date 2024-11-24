@@ -185,6 +185,7 @@ public class MunicipalityController(EfDbContext context) : ControllerBase
             return NotFound(error);
         }
     }
+
     [HttpGet]
     [Route("myteams")]
     [Authorize(AuthenticationSchemes = "Bearer")]
@@ -192,12 +193,14 @@ public class MunicipalityController(EfDbContext context) : ControllerBase
     {
         try
         {
-            if(!User.HasClaim("Role", TerritoryType.Municipality.ToString()))
+            if (!User.HasClaim("Role", TerritoryType.Municipality.ToString()))
             {
-                var error = SharedHelper.CreateErrorResponse("You are not authorized to perform this action");
+                var error = SharedHelper.CreateErrorResponse(
+                    "You are not authorized to perform this action"
+                );
                 return BadRequest(error);
             }
-            
+
             var validationErr = SharedHelper.ModelValidationCheck(ModelState);
             if (validationErr != null)
             {
@@ -210,31 +213,30 @@ public class MunicipalityController(EfDbContext context) : ControllerBase
                 var error = SharedHelper.CreateErrorResponse("Municipality not found");
                 return BadRequest(error);
             }
-            var myTeam = await context.Teams.FirstOrDefaultAsync(x => x.TerritoryId == Guid.Parse(tokenWardId));
+            var myTeam = await context.Teams.FirstOrDefaultAsync(x =>
+                x.TerritoryId == Guid.Parse(tokenWardId)
+            );
             if (myTeam == null)
             {
                 var error = SharedHelper.CreateErrorResponse("Team not found");
                 return BadRequest(error);
             }
-            var myPlayers = await context.PersonTeams
-                .Include(pt => pt.Person)
+            var myPlayers = await context
+                .PersonTeams.Include(pt => pt.Person)
                 .Where(pt => pt.TeamId == myTeam.TeamId)
                 .Select(pt => pt.Person)
                 .ToListAsync();
             //categorise players
-            var dataToReturn = new Dictionary<string,object>
+            var dataToReturn = new Dictionary<string, object>
             {
                 { "players", myPlayers.Where(p => p.Role == Role.Player).ToList() },
                 { "coaches", myPlayers.Where(p => p.Role == Role.Coach).ToList() },
                 { "managers", myPlayers.Where(p => p.Role == Role.Manager).ToList() },
                 { "teamName", myTeam.Name },
             };
-            
-            
-            
-            var toReturn = new ApiResponse<Dictionary<string,object>> { Data = dataToReturn };
+
+            var toReturn = new ApiResponse<Dictionary<string, object>> { Data = dataToReturn };
             return Ok(toReturn);
-            
         }
         catch (Exception e)
         {
@@ -252,7 +254,9 @@ public class MunicipalityController(EfDbContext context) : ControllerBase
         {
             if (!User.HasClaim("Role", TerritoryType.Municipality.ToString()))
             {
-                var error = SharedHelper.CreateErrorResponse("You are not authorized to perform this action");
+                var error = SharedHelper.CreateErrorResponse(
+                    "You are not authorized to perform this action"
+                );
                 return BadRequest(error);
             }
 
@@ -280,9 +284,9 @@ public class MunicipalityController(EfDbContext context) : ControllerBase
                         pt.PersonId == playerId && pt.Team.TerritoryId == munId
                     ),
                     PlayerTeam = context
-                        .PersonTeams.Include(pt=>pt.Team).Where(pt =>
-                            pt.PersonId == playerId
-                            && pt.Team.TerritoryType == TerritoryType.Ward
+                        .PersonTeams.Include(pt => pt.Team)
+                        .Where(pt =>
+                            pt.PersonId == playerId && pt.Team.TerritoryType == TerritoryType.Ward
                         )
                         .Select(pt => new
                         {
@@ -302,7 +306,9 @@ public class MunicipalityController(EfDbContext context) : ControllerBase
 
             if (playerDetails.MunicipalityTeam == null)
             {
-                return BadRequest(SharedHelper.CreateErrorResponse("Municipality's team not found"));
+                return BadRequest(
+                    SharedHelper.CreateErrorResponse("Municipality's team not found")
+                );
             }
 
             if (playerDetails.ExistingPersonTeam != null)
@@ -328,25 +334,15 @@ public class MunicipalityController(EfDbContext context) : ControllerBase
                 PersonId = playerId,
                 TeamId = playerDetails.MunicipalityTeam.TeamId,
             };
-            
 
             context.PersonTeams.Add(newPersonTeam);
             await context.SaveChangesAsync();
             return Ok(new ApiResponse<Person> { Data = playerDetails.Player });
-
         }
         catch (Exception e)
         {
             var error = SharedHelper.CreateErrorResponse("Something went wrong");
             return StatusCode(500, error);
         }
-
-
-
-
-     
     }
-    
-
-    
 }
