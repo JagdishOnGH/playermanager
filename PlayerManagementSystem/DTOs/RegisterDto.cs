@@ -17,11 +17,4 @@ public class RegisterDto
     public Guid TerritoryId  { get; set; }
     
 }
-public enum AuthRoles
-{
-    WardAdmin = 1,
-    MunicipalityAdmin = 2,
-    DistrictAdmin = 3,
-    ProvinceAdmin = 4,
-    SuperAdmin = 5
-}
+
