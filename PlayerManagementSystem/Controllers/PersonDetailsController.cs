@@ -25,6 +25,7 @@ public class PersonDetailsController(EfDbContext context) : ControllerBase
                 Role = personDetails.Role,
                 Email = personDetails.Email,
             };
+            
             var teamId = personDetails.TeamId;
             var team = await context.Teams.FirstOrDefaultAsync(x => x.TeamId == teamId );
             if (team == null)

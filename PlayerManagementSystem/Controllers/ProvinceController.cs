@@ -23,8 +23,23 @@ public class ProvinceController(EfDbContext context) : ControllerBase
     {
         try
         {
-            var provinces = await context.Provinces.ToListAsync();
-            var toReturn = new ApiResponse<List<Province>> { Data = provinces };
+            var provinces = await context.Provinces.Select(province =>
+                new
+                {
+                    provinceName = province.Name,  // Use province.Name to get the name
+                    districts = context.Districts
+                        .Where(d => d.ProvinceId == province.ProvinceId)
+                        .Select(d => d.Name)
+                        .ToList(),
+                    team= context.Teams.Where(t => t.TerritoryId == province.ProvinceId).Select(s =>
+                  new  {
+                        teamName = s.Name,
+                        players= context.PersonTeams.Where(p=> p.TeamId==s.TeamId).Select(p=>p.Person).ToList()
+                    }).FirstOrDefault()// Return the list of district names
+                }).ToListAsync();
+
+            
+            var toReturn = new ApiResponse<object> { Data = provinces };
             return Ok(toReturn);
         }
         catch (Exception e)
