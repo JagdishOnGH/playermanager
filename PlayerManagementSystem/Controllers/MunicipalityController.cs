@@ -129,6 +129,12 @@ public class MunicipalityController(EfDbContext context) : ControllerBase
                 var error = SharedHelper.CreateErrorResponse(validationErr);
                 return BadRequest(error);
             }
+            //check if wardno is number
+            if (!int.TryParse(ward.WardNo, out _))
+            {
+                var error = SharedHelper.CreateErrorResponse("Ward No must be a number");
+                return BadRequest(error);
+            }
             //use muncipal id and check if same word no exists or not
             var wardQuery = context
                 .Wards.Where(m => m.MunicipalityId == Guid.Parse(tokenMunicipalId))
